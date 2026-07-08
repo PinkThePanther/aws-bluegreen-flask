@@ -1,26 +1,11 @@
-import { useEffect, useState } from "react";
+import "./App.css"
+import Login from "./pages/Login";
+import Feed from "./components/Feed";
 
 function App() {
-  const [backendStatus, setBackendStatus] = useState("checking...");
+  const loggedIn = false;
 
-  useEffect(() => {
-    fetch("http://localhost:8080/health")
-      .then((response) => response.text())
-      .then((data) => {
-        setBackendStatus(data);
-      })
-      .catch((error) => {
-        setBackendStatus("Could not reach Flask backend");
-        console.error(error);
-      });
-  }, []);
-
-  return (
-    <div>
-      <h1>Blue Green Flask + React</h1>
-      <p>Backend status: {backendStatus}</p>
-    </div>
-  );
+  return loggedIn ? <Feed /> : <Login />;
 }
 
-export default App;
+export default App
