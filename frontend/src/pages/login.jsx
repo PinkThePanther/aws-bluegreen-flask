@@ -1,13 +1,20 @@
 
 
 
-function Login() {
+function Login(onLogin ) {
+
+     function handleSubmit(event) {
+        event.preventDefault();
+        onLogin();
+  }
+
+
   return (
     <div className="login-page">
       <div className="login-card">
         <h1 className="login-logo">BlueGreen</h1>
 
-        <form className="login-form">
+        <form className="login-form" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Username or email"
@@ -28,5 +35,7 @@ function Login() {
     </div>
   );
 }
+
+
 
 export default Login;

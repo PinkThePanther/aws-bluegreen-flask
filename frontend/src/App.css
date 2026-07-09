@@ -32,7 +32,7 @@
   border: 1px solid #ddd;
   padding: 16px;
   border-radius: 8px;
-  max-width: 600px;
+  max-width: 1px;
 }
 
 
@@ -55,7 +55,11 @@
 .login-logo {
   margin-bottom: 30px;
   font-size: 36px;
+   color: #000;
+
 }
+
+
 
 .login-form {
   display: flex;
@@ -63,11 +67,13 @@
   gap: 10px;
 }
 
+
 .login-input {
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #d1d5db;
   border-radius: 4px;
   font-size: 14px;
+  background-color: #f3f4f6;
 }
 
 .login-button {

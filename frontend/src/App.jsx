@@ -1,11 +1,16 @@
-import "./App.css"
-import Login from "./pages/Login";
-import Feed from "./components/Feed";
+import { useState } from "react";
+import Login from "./pages/login";
+import Feed from "./components/feed";
+import "./App.css";
 
 function App() {
-  const loggedIn = false;
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  return loggedIn ? <Feed /> : <Login />;
+  return loggedIn ? (
+    <Feed />
+  ) : (
+    <Login onLogin={() => setLoggedIn(true)} />
+  );
 }
 
-export default App
+export default App;
