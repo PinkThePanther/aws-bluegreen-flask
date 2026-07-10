@@ -16,7 +16,7 @@ function Feed() {
 
 
         <div>
-          <Feed></Feed>
+    
         </div>
       </main>
     </div>

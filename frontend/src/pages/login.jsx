@@ -1,7 +1,7 @@
 
 
 
-function Login(onLogin ) {
+function Login({onLogin} ) {
 
      function handleSubmit(event) {
         event.preventDefault();

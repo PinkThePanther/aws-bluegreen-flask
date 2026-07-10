@@ -6,10 +6,14 @@ import "./App.css";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
+  function handleLogin() {
+    setLoggedIn(true);
+  }
+
   return loggedIn ? (
     <Feed />
   ) : (
-    <Login onLogin={() => setLoggedIn(true)} />
+   <Login onLogin={handleLogin} />
   );
 }
 
