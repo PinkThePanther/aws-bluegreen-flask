@@ -1,3 +1,7 @@
+import Post from "./post";
+import banana from "../assets/banana.jpg";
+import market from "../assets/market.jpg";
+
 
 
 function Feed() {
@@ -14,15 +18,21 @@ function Feed() {
       <main className="main">
         <h1>Home Feed</h1>
 
-
         <div>
-    
+          {posts.map((post) => (
+            <Post
+              key={post.id}
+              image={post.image}
+              likes={post.likes}
+            />
+          ))}
         </div>
+
       </main>
     </div>
-  )
+  );
 }
 
+export default Feed;
 
 
-export default Feed

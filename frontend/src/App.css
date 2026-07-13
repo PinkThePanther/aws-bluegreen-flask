@@ -73,7 +73,13 @@
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font-size: 14px;
+  color: #111827;
   background-color: #f3f4f6;
+}
+
+.login-input::placeholder {
+  color: #6b7280;
+  opacity: 1;
 }
 
 .login-button {
