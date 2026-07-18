@@ -1,6 +1,5 @@
-import Post from "./post";
-import banana from "../assets/banana.jpg";
-import market from "../assets/market.jpg";
+import posts from "../data/posts";
+import Post from "./Post";
 
 
 

@@ -1,9 +1,22 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy 
 import os
 
 app = Flask(__name__)
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bluegreen.db"
+
+db = SQLAlchemy(app)
+
 CORS(app)
+
+
+
+class User(db.Model):
+    pass
+
 
 @app.get("/")
 def home():
