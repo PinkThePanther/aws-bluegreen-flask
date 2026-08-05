@@ -1,7 +1,7 @@
 
 
 
-function Login({onLogin} ) {
+function Login({onLogin, onSignup} ) {
 
      function handleSubmit(event) {
         event.preventDefault();
@@ -29,6 +29,9 @@ function Login({onLogin} ) {
 
           <button type="submit" className="login-button">
             Log in
+          </button>
+          <button type="button" className="signup-button" onClick={onSignup}>
+            Create account
           </button>
         </form>
       </div>
