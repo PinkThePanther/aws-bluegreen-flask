@@ -26,39 +26,66 @@ function Signup({ onBackToLogin }) {
   }
 
   return (
-    <div>
-      <h1>Create account</h1>
+    <div className="login-page">
+      <div className="login-card">
+        <h1 className="login-logo">BlueGreen</h1>
+        <p className="signup-intro">Create an account to get started.</p>
 
-      <form onSubmit={handleSignup}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
+        <form className="login-form" onSubmit={handleSignup}>
+          <label className="form-field">
+            <span className="form-label">Username</span>
+            <input
+              className="login-input"
+              type="text"
+              name="username"
+              autoComplete="username"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              required
+            />
+          </label>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
+          <label className="form-field">
+            <span className="form-label">Email</span>
+            <input
+              className="login-input"
+              type="email"
+              name="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
+          <label className="form-field">
+            <span className="form-label">Password</span>
+            <input
+              className="login-input"
+              type="password"
+              name="password"
+              autoComplete="new-password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
 
-        <button type="submit">
-          Sign up
-        </button>
-      </form>
+          <button type="submit" className="login-button">
+            Create account
+          </button>
+        </form>
 
-      <button onClick={onBackToLogin}>
-        Back to login
-      </button>
+        <p className="auth-footer">
+          Already have an account?{" "}
+          <button type="button" className="text-button" onClick={onBackToLogin}>
+            Log in
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
