@@ -184,3 +184,9 @@
   height: auto;
   display: block;
 }
+
+
+.login-error {
+  margin: 0;
+  font-size: 14px;
+}

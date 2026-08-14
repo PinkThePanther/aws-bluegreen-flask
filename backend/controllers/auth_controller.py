@@ -25,4 +25,14 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    return authenticate_user(email, password)
+
+    if authenticate_user(email, password):
+        return {
+            "message": "Login successful"
+        }, 200
+
+    return {
+        "message": "Invalid email or password"
+    }, 401
+
+    
