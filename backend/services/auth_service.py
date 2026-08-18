@@ -17,6 +17,8 @@ def register_user(username, email, password):
 
 
 def authenticate_user(identifier, password):
+    print("LOGIN IDENTIFIER:", identifier)
+
     stmt = select(User).where(
         or_(
             User.email == identifier,
@@ -26,25 +28,7 @@ def authenticate_user(identifier, password):
 
     user = db.session.scalar(stmt)
 
-    if user is None:
-        return False
-
-    return check_password_hash(user.password_hash, password)
-
-
-
-
-    from sqlalchemy import select, or_
-
-def authenticate_user(identifier, password):
-    stmt = select(User).where(
-        or_(
-            User.email == identifier,
-            User.username == identifier
-        )
-    )
-
-    user = db.session.scalar(stmt)
+    print("FOUND USER:", user)
 
     if user is None:
         return False

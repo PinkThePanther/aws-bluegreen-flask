@@ -1,6 +1,5 @@
-from flask import request, jsonify
-from backend.services.auth_service import (register_user,authenticate_user,
-)
+from flask import request
+from backend.services.auth_service import register_user, authenticate_user
 
 
 def signup():
@@ -22,17 +21,14 @@ def login():
     """
     data = request.get_json()
 
-    email = data.get("email")
+    identifier = data.get("email")
     password = data.get("password")
 
-
-    if authenticate_user(email, password):
+    if authenticate_user(identifier, password):
         return {
             "message": "Login successful"
         }, 200
 
     return {
-        "message": "Invalid email or password"
+        "message": "Invalid username/email or password"
     }, 401
-
-    

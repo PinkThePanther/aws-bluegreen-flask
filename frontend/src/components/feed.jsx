@@ -3,7 +3,7 @@ import Post from "./Post";
 
 
 
-function Feed() {
+function Feed({onLogout}) {
   return (
     <div className="app">
       <aside className="sidebar">
@@ -12,6 +12,7 @@ function Feed() {
         <button>Messages</button>
         <button>Create Post</button>
         <button>Settings</button>
+        <button onClick={onLogout}>Log out</button>
       </aside>
 
       <main className="main">

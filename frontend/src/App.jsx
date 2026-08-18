@@ -12,9 +12,14 @@ function App() {
     setLoggedIn(true);
   }
 
-  if (loggedIn) {
-    return <Feed />;
+  function handleLogout(){
+    setLoggedIn(false);
+  } 
+
+   if (loggedIn) {
+    return <Feed onLogout={handleLogout} />;
   }
+
 
   if (page === "signup") {
     return (
@@ -32,4 +37,8 @@ function App() {
   );
 }
 
+
+
+
 export default App;
+

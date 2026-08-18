@@ -3,12 +3,15 @@ import { useState } from "react";
 function Login({ onLogin, onSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
 
   // NEW: stores an error message to show on the page
   const [error, setError] = useState("");
 
   // NEW: tracks whether the login request is currently running
   const [loading, setLoading] = useState(false);
+
+  
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -52,6 +55,13 @@ function Login({ onLogin, onSignup }) {
     <div className="login-page">
       <div className="login-card">
         <h1 className="login-logo">BlueGreen</h1>
+
+        {loading && (
+          <div className="login-status">
+            <div className="spinner"></div>
+            <span>Signing in...</span>
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <input

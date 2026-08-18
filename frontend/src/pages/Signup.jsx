@@ -5,24 +5,42 @@ function Signup({ onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
   async function handleSignup(event) {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8080/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
+    setLoading(true);
+    setMessage("");
+    setError("");
 
-    const data = await response.json();
+    try {
+      const response = await fetch("http://localhost:8080/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
 
-    console.log(data);
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(data.message || "User created successfully");
+      } else {
+        setError(data.message || "Unable to create account");
+      }
+    } catch (error) {
+      setError("Unable to connect to the server");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -30,6 +48,25 @@ function Signup({ onBackToLogin }) {
       <div className="login-card">
         <h1 className="login-logo">BlueGreen</h1>
         <p className="signup-intro">Create an account to get started.</p>
+
+        {loading && (
+          <div className="login-status">
+            <div className="spinner"></div>
+            <span>Creating account...</span>
+          </div>
+        )}
+
+        {message && (
+          <p className="signup-success">
+            {message}
+          </p>
+        )}
+
+        {error && (
+          <p className="login-error">
+            {error}
+          </p>
+        )}
 
         <form className="login-form" onSubmit={handleSignup}>
           <label className="form-field">
@@ -74,14 +111,22 @@ function Signup({ onBackToLogin }) {
             />
           </label>
 
-          <button type="submit" className="login-button">
+          <button
+            type="submit"
+            className="login-button"
+            disabled={loading}
+          >
             Create account
           </button>
         </form>
 
         <p className="auth-footer">
           Already have an account?{" "}
-          <button type="button" className="text-button" onClick={onBackToLogin}>
+          <button
+            type="button"
+            className="text-button"
+            onClick={onBackToLogin}
+          >
             Log in
           </button>
         </p>
