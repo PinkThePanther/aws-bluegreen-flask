@@ -1,9 +1,17 @@
-import posts from "../data/posts";
 import Post from "./Post";
+import { useEffect, useState } from "react";
+
+
 
 
 
 function Feed({onLogout}) {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    fetch("http://127.0.0.1:8080/posts")
+        .then(response => response.json())
+        .then(data => setPosts(data));
+}, []);
   return (
     <div className="app">
       <aside className="sidebar">
@@ -22,7 +30,8 @@ function Feed({onLogout}) {
           {posts.map((post) => (
             <Post
               key={post.id}
-              image={post.image}
+              image={post.image_url}
+              caption={post.caption}
               likes={post.likes}
             />
           ))}

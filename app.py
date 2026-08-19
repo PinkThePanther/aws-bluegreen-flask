@@ -5,6 +5,7 @@ import os
 from backend.controllers.auth_controller import signup, login
 from backend.extensions import db
 from backend.models.user import User
+from backend.controllers.content_controller import create_post_controller, get_posts_controller
 
 
 app = Flask(__name__)
@@ -89,6 +90,9 @@ def health():
 # Routes
 app.add_url_rule("/signup", view_func=signup, methods=["POST"])
 app.add_url_rule("/login", view_func=login, methods=["POST"])
+app.add_url_rule("/posts",view_func=create_post_controller,methods=["POST"])
+app.add_url_rule("/posts", view_func=get_posts_controller, methods=["GET"])
+
 
 
 
