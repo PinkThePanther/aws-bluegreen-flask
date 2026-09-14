@@ -42,7 +42,7 @@ function Login({ onLogin, onSignup }) {
         // NEW: show Flask's error message
         setError(data.message || "Login failed");
       }
-    } catch (error) {
+    } catch {
       // NEW: handles things like Flask not running
       setError("Unable to connect to the server");
     } finally {

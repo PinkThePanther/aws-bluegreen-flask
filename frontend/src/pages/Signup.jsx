@@ -36,7 +36,7 @@ function Signup({ onBackToLogin }) {
       } else {
         setError(data.message || "Unable to create account");
       }
-    } catch (error) {
+    } catch {
       setError("Unable to connect to the server");
     } finally {
       setLoading(false);

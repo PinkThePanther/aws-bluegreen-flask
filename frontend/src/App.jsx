@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Feed from "./components/Feed";
+import Feed from "./components/feed";
 import "./App.css";
 
 function App() {
@@ -41,4 +41,3 @@ function App() {
 
 
 export default App;
-
