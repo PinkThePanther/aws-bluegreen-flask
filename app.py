@@ -6,9 +6,11 @@ from backend.controllers.auth_controller import signup, login
 from backend.extensions import db
 from backend.models.user import User
 from backend.controllers.content_controller import create_post_controller, get_posts_controller
+from backend.observability import configure_observability
 
 
 app = Flask(__name__)
+configure_observability(app)
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bluegreen.db"
@@ -51,10 +53,6 @@ CORS(app)
 
 with app.app_context():
     db.create_all()
-    users = User.query.all()
-
-    for user in users:
-        print(user.username)
 
 
     # user = User (

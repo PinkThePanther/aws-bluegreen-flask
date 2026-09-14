@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from backend.services.auth_service import register_user, authenticate_user
 
 
@@ -25,10 +25,12 @@ def login():
     password = data.get("password")
 
     if authenticate_user(identifier, password):
+        current_app.logger.info("login_succeeded")
         return {
             "message": "Login successful"
         }, 200
 
+    current_app.logger.warning("login_failed reason=invalid_credentials")
     return {
         "message": "Invalid username/email or password"
     }, 401
