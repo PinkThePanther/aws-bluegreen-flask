@@ -48,3 +48,9 @@ OTLP exporter.
 The instrumentation deliberately avoids recording request bodies, passwords,
 email addresses, query strings, and other user-provided values in application
 logs.
+
+## Deployment learning guide
+
+See [`docs/ecs-cloudwatch-observability-runbook.md`](docs/ecs-cloudwatch-observability-runbook.md)
+for the complete image-build, ECR, ECS task-definition, health-check, and
+CloudWatch verification workflow used for this project.

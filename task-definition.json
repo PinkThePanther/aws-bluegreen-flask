@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "bluegreen-flask",
-      "image": "973940554982.dkr.ecr.us-east-1.amazonaws.com/bluegreen-flask:3",
+      "image": "973940554982.dkr.ecr.us-east-1.amazonaws.com/bluegreen-flask:2f3aa1c",
       "essential": true,
       "portMappings": [
         {
@@ -17,6 +17,16 @@
           "protocol": "tcp"
         }
       ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=5)\" || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      },
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
