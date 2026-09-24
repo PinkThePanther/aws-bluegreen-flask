@@ -10,6 +10,12 @@
       "name": "bluegreen-flask",
       "image": "973940554982.dkr.ecr.us-east-1.amazonaws.com/bluegreen-flask:2f3aa1c",
       "essential": true,
+      "environment": [
+        {
+          "name": "DEMO_MODE",
+          "value": "true"
+        }
+      ],
       "portMappings": [
         {
           "containerPort": 8080,

@@ -14,6 +14,48 @@ python app.py
 
 The API listens on `http://localhost:8080`.
 
+## Demo account
+
+Enable the disposable portfolio account before starting the backend:
+
+```bash
+export DEMO_MODE=true
+python app.py
+```
+
+The login page's **Use demo account** button fills the seeded account's public
+demo credentials. The request still passes through the normal `/login`
+authentication flow. Keep `DEMO_MODE` disabled outside disposable demo
+environments.
+
+## Blue/green visual demo
+
+The stable blue frontend has no weather widget. The green candidate adds an
+intentionally malfunctioning early-web weather widget and animated raindrops,
+providing an unmistakable visual reason to roll traffic back even while the
+basic health check remains successful.
+
+After signing in, the **Deployment demo** panel lets a portfolio reviewer
+preview Blue, preview Green, inspect representative ECS and CloudWatch evidence,
+and roll back to Blue. This browser control is explicitly a cost-free
+simulation: it does not start tasks or modify AWS resources. The account and
+feed remain unchanged between releases so the deployment difference is clear.
+The panel walks the reviewer through establishing a stable baseline, previewing
+the candidate, and making a rollback decision when application health and user
+experience tell different stories.
+
+The ECS and CloudWatch values in this browser panel are labeled example data.
+They illustrate the real log fields produced by the application without
+pretending that the static portfolio control is a live AWS console.
+
+```bash
+# Stable blue release
+VITE_DEPLOYMENT_COLOR=blue npm --prefix frontend run dev
+
+# Intentionally defective green release
+VITE_DEPLOYMENT_COLOR=green npm --prefix frontend run dev
+```
+
 ## Observability
 
 The Flask application is instrumented with OpenTelemetry. Requests produce a

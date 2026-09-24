@@ -5,6 +5,7 @@ import os
 from backend.controllers.auth_controller import signup, login
 from backend.extensions import db
 from backend.models.user import User
+from backend.services.auth_service import ensure_demo_user
 from backend.controllers.content_controller import create_post_controller, get_posts_controller
 from backend.observability import configure_observability
 
@@ -53,6 +54,10 @@ CORS(app)
 
 with app.app_context():
     db.create_all()
+
+    if os.getenv("DEMO_MODE", "false").lower() == "true":
+        demo_account_action = ensure_demo_user()
+        app.logger.info("demo_account_ready action=%s", demo_account_action)
 
 
     # user = User (

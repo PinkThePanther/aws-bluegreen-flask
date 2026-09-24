@@ -1,4 +1,6 @@
 import Post from "./Post";
+import WeatherWidget from "./WeatherWidget";
+import DeploymentDemo from "./DeploymentDemo";
 import { useEffect, useState } from "react";
 import profilePhoto from "../assets/sandisk-WenbkhpNLCc-unsplash.jpg";
 
@@ -19,6 +21,12 @@ const Icon = ({ name }) => {
 function Feed({ onLogout }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const initialDeployment =
+    (import.meta.env.VITE_DEPLOYMENT_COLOR || "blue").toLowerCase() === "green"
+      ? "green"
+      : "blue";
+  const [deployment, setDeployment] = useState(initialDeployment);
+  const isGreenDeployment = deployment === "green";
 
   useEffect(() => {
     fetch("http://127.0.0.1:8080/posts")
@@ -29,6 +37,7 @@ function Feed({ onLogout }) {
   }, []);
 
   return (
+    <>
     <div className="social-shell">
       <aside className="left-rail">
         <a className="brand" href="#feed" aria-label="BlueGreen home">
@@ -83,6 +92,8 @@ function Feed({ onLogout }) {
           <button className="header-action" type="button" aria-label="Create a post"><Icon name="plus" />New post</button>
         </header>
 
+        {isGreenDeployment && <WeatherWidget />}
+
         <section className="composer" aria-label="Create a post">
           <img src={profilePhoto} alt="" />
           <button type="button">What’s going on, Alex?</button>
@@ -124,6 +135,8 @@ function Feed({ onLogout }) {
         </section>
       </aside>
     </div>
+    <DeploymentDemo deployment={deployment} onDeploymentChange={setDeployment} />
+    </>
   );
 }
 

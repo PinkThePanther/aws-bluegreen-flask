@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+const DEMO_EMAIL = "demo@bluegreen.app";
+const DEMO_PASSWORD = "DemoOnly123!";
+
 function Login({ onLogin, onSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +14,11 @@ function Login({ onLogin, onSignup }) {
   // NEW: tracks whether the login request is currently running
   const [loading, setLoading] = useState(false);
 
-  
+  function loadDemoAccount() {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setError("");
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -94,6 +101,18 @@ function Login({ onLogin, onSignup }) {
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
+
+          <div className="demo-login">
+            <p>Want a quick tour? Use the disposable sample account.</p>
+            <button
+              type="button"
+              className="demo-button"
+              onClick={loadDemoAccount}
+              disabled={loading}
+            >
+              Use demo account
+            </button>
+          </div>
 
           <button
             type="button"
