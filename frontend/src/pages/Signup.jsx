@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "../api";
 
 function Signup({ onBackToLogin }) {
   const [username, setUsername] = useState("");
@@ -17,7 +18,7 @@ function Signup({ onBackToLogin }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/signup", {
+      const response = await fetch(apiUrl("/signup"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

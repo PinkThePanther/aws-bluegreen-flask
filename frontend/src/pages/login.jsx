@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "../api";
 
 const DEMO_EMAIL = "demo@bluegreen.app";
 const DEMO_PASSWORD = "DemoOnly123!";
@@ -30,7 +31,7 @@ function Login({ onLogin, onSignup }) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/login", {
+      const response = await fetch(apiUrl("/login"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -55,6 +55,23 @@ Stack:
 - Logging: ECS awslogs driver to CloudWatch Logs
 - Instrumentation: OpenTelemetry for Flask
 
+Production packaging now uses one multi-stage Docker image. A Node build stage
+compiles React, and the final Python stage copies the compiled files beside
+Flask. Gunicorn exposes one port; Flask serves both the browser application and
+the API. Local development may still run Vite and Flask as separate processes.
+
+~~~text
+Local development:
+browser -> Vite :5173 -> Flask API :8080
+
+Production container:
+browser -> Gunicorn/Flask :PORT -> React files and API routes
+~~~
+
+The frontend uses same-origin API paths in production instead of a hard-coded
+localhost address. DATABASE_URL can point SQLite at a mounted persistent
+volume, such as sqlite:////data/bluegreen.db.
+
 Portfolio story:
 
 - Blue is the stable release with no weather widget.
@@ -446,4 +463,3 @@ I should eventually answer these without notes:
 8. Why is the recruiter interface simulated?
 9. Why should temporary desired count return to zero?
 10. What database concerns matter before public hosting?
-

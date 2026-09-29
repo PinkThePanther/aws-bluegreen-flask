@@ -3,6 +3,7 @@ import WeatherWidget from "./WeatherWidget";
 import DeploymentDemo from "./DeploymentDemo";
 import { useEffect, useState } from "react";
 import profilePhoto from "../assets/sandisk-WenbkhpNLCc-unsplash.jpg";
+import { apiUrl } from "../api";
 
 const Icon = ({ name }) => {
   const paths = {
@@ -29,7 +30,7 @@ function Feed({ onLogout }) {
   const isGreenDeployment = deployment === "green";
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8080/posts")
+    fetch(apiUrl("/posts"))
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch(() => setPosts([]))

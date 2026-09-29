@@ -1,20 +1,27 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 #from flask_sqlalchemy import SQLAlchemy 
 import os
+from pathlib import Path
 from backend.controllers.auth_controller import signup, login
 from backend.extensions import db
 from backend.models.user import User
-from backend.services.auth_service import ensure_demo_user
+from backend.services.auth_service import ensure_demo_posts, ensure_demo_user
 from backend.controllers.content_controller import create_post_controller, get_posts_controller
 from backend.observability import configure_observability
 
 
-app = Flask(__name__)
+PROJECT_ROOT = Path(__file__).resolve().parent
+FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
+
+app = Flask(__name__, static_folder=None)
 configure_observability(app)
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bluegreen.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///bluegreen.db"
+)
 db.init_app(app)
 
 #db = SQLAlchemy(app)
@@ -57,7 +64,12 @@ with app.app_context():
 
     if os.getenv("DEMO_MODE", "false").lower() == "true":
         demo_account_action = ensure_demo_user()
-        app.logger.info("demo_account_ready action=%s", demo_account_action)
+        demo_posts_action = ensure_demo_posts()
+        app.logger.info(
+            "demo_content_ready account_action=%s posts_action=%s",
+            demo_account_action,
+            demo_posts_action,
+        )
 
 
     # user = User (
@@ -78,7 +90,9 @@ with app.app_context():
 
 @app.get("/")
 def home():
-    return "green: OK\n"
+    if FRONTEND_DIST.is_dir():
+        return send_from_directory(FRONTEND_DIST, "index.html")
+    return "bluegreen api: OK\n"
 
 @app.get("/health")
 def health():
@@ -95,6 +109,20 @@ app.add_url_rule("/signup", view_func=signup, methods=["POST"])
 app.add_url_rule("/login", view_func=login, methods=["POST"])
 app.add_url_rule("/posts",view_func=create_post_controller,methods=["POST"])
 app.add_url_rule("/posts", view_func=get_posts_controller, methods=["GET"])
+
+
+@app.get("/<path:path>")
+def frontend_files(path):
+    """Serve built React assets and fall back to the SPA entry point."""
+    requested_file = FRONTEND_DIST / path
+
+    if requested_file.is_file():
+        return send_from_directory(FRONTEND_DIST, path)
+
+    if FRONTEND_DIST.is_dir():
+        return send_from_directory(FRONTEND_DIST, "index.html")
+
+    return {"message": "Frontend build not found"}, 404
 
 
 

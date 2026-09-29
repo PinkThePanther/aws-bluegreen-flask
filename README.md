@@ -14,6 +14,25 @@ python app.py
 
 The API listens on `http://localhost:8080`.
 
+## Production container
+
+The Dockerfile uses a multi-stage build. Node compiles the React frontend, then
+the final Python image copies those static assets beside Flask. Gunicorn serves
+the API and Flask serves the compiled frontend from the same origin, so the
+production deployment needs only one container and one public port.
+
+```bash
+docker build --platform linux/amd64 -t bluegreen-flask:local .
+docker run --rm -p 8080:8080 -e DEMO_MODE=true bluegreen-flask:local
+```
+
+Open `http://localhost:8080`. The container reads `PORT` when a hosting
+platform supplies one. Set `DATABASE_URL=sqlite:////data/bluegreen.db` when a
+persistent volume is mounted at `/data`.
+
+Local Vite development still runs separately. Copy `frontend/.env.example` to
+`frontend/.env.local` so Vite sends API requests to the local Flask server.
+
 ## Demo account
 
 Enable the disposable portfolio account before starting the backend:
@@ -25,7 +44,8 @@ python app.py
 
 The login page's **Use demo account** button fills the seeded account's public
 demo credentials. The request still passes through the normal `/login`
-authentication flow. Keep `DEMO_MODE` disabled outside disposable demo
+authentication flow. Demo mode also seeds a predictable two-post feed when the
+demo user has no posts. Keep `DEMO_MODE` disabled outside disposable demo
 environments.
 
 ## Blue/green visual demo
