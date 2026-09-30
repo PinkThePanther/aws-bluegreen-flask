@@ -34,9 +34,11 @@ function DeploymentDemo({ deployment, onDeploymentChange }) {
       <div className="scenario-panel">
         <strong>The scenario</strong>
         <p>
-          Blue is the stable ECS release. Green introduces a weather widget.
-          The API remains available, but the new interface visibly malfunctions.
-          The account and feed stay identical so the release change is isolated.
+          This browser walkthrough is based on the project's original AWS ECS
+          deployment exercise. Blue is stable; Green introduces a weather
+          widget whose interface visibly malfunctions even though the API stays
+          available. The live portfolio app is hosted on Railway, and these
+          controls simulate the release decision without changing cloud resources.
         </p>
       </div>
 
@@ -57,18 +59,20 @@ function DeploymentDemo({ deployment, onDeploymentChange }) {
 
       <div className="release-summary" aria-live="polite">
         <div><span>Active view</span><strong>{release.label}</strong></div>
-        <div><span>ECS task</span><strong>{release.task}</strong></div>
+        <div><span>AWS example task</span><strong>{release.task}</strong></div>
         <div><span>Traffic</span><strong>{release.traffic}</strong></div>
         <div><span>Service</span><strong>{release.status}</strong></div>
       </div>
 
       <details className="trace-example">
-        <summary>View example trace and CloudWatch log</summary>
+        <summary>View example request trace and application log</summary>
         <div className="trace-explanation">
           <p>
             OpenTelemetry places the same trace identifier on the request span
             and application log, allowing an operator to connect the user action
-            to the ECS service that handled it.
+            to the container that handled it. During the original AWS exercise,
+            ECS forwarded these application logs to CloudWatch; the current
+            Railway-hosted demo uses Railway runtime logging.
           </p>
           <pre>{`request_completed
 method=GET path=/posts status=200
@@ -76,7 +80,7 @@ duration_ms=${release.latency}
 service=bluegreen-flask
 task_definition=${release.task}
 trace_id=${release.trace}`}</pre>
-          <small>Representative example—not a live CloudWatch query.</small>
+          <small>Representative application-log example—not a live cloud query.</small>
         </div>
       </details>
 

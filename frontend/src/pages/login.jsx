@@ -63,6 +63,11 @@ function Login({ onLogin, onSignup }) {
     <div className="login-page">
       <div className="login-card">
         <h1 className="login-logo">BlueGreen</h1>
+        <p className="signup-intro">
+          A containerized Flask and React portfolio project demonstrating how
+          teams compare a stable Blue release with a Green candidate before
+          deciding whether to promote or roll back.
+        </p>
 
         {loading && (
           <div className="login-status">
@@ -104,7 +109,10 @@ function Login({ onLogin, onSignup }) {
           </button>
 
           <div className="demo-login">
-            <p>Want a quick tour? Use the disposable sample account.</p>
+            <p>
+              Recruiter walkthrough: load the disposable demo account, sign in,
+              then follow the Blue → Green → rollback controls below the feed.
+            </p>
             <button
               type="button"
               className="demo-button"
@@ -114,6 +122,12 @@ function Login({ onLogin, onSignup }) {
               Use demo account
             </button>
           </div>
+
+          <p className="signup-intro">
+            Originally exercised on AWS ECS with CloudWatch logging. This live
+            portfolio version runs on Railway using the same Dockerized app and
+            Railway runtime logs.
+          </p>
 
           <button
             type="button"
