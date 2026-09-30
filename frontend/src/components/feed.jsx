@@ -22,6 +22,9 @@ const Icon = ({ name }) => {
 function Feed({ account, isDemoSession, onLogout }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [draftCaption, setDraftCaption] = useState("");
+  const [draftImage, setDraftImage] = useState(null);
   const initialDeployment =
     (import.meta.env.VITE_DEPLOYMENT_COLOR || "blue").toLowerCase() === "green"
       ? "green"
@@ -36,6 +39,49 @@ function Feed({ account, isDemoSession, onLogout }) {
       .catch(() => setPosts([]))
       .finally(() => setLoading(false));
   }, []);
+
+  const closeComposer = () => {
+    if (draftImage?.previewUrl) {
+      URL.revokeObjectURL(draftImage.previewUrl);
+    }
+    setDraftCaption("");
+    setDraftImage(null);
+    setComposerOpen(false);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (draftImage?.previewUrl) {
+      URL.revokeObjectURL(draftImage.previewUrl);
+    }
+
+    setDraftImage({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    });
+  };
+
+  const handleCreatePost = (event) => {
+    event.preventDefault();
+
+    if (!draftCaption.trim() && !draftImage) return;
+
+    setPosts((currentPosts) => [
+      {
+        id: `preview-${Date.now()}`,
+        caption: draftCaption.trim(),
+        image_url: draftImage?.previewUrl || null,
+        likes: 0,
+      },
+      ...currentPosts,
+    ]);
+    setDraftCaption("");
+    setDraftImage(null);
+    setComposerOpen(false);
+  };
 
   return (
     <>
@@ -93,14 +139,14 @@ function Feed({ account, isDemoSession, onLogout }) {
             <p className="eyebrow">Thursday, September 11</p>
             <h1>Home</h1>
           </div>
-          <button className="header-action" type="button" aria-label="Create a post"><Icon name="plus" />New post</button>
+          <button className="header-action" type="button" aria-label="Create a post" onClick={() => setComposerOpen(true)}><Icon name="plus" />New post</button>
         </header>
 
         {isGreenDeployment && <WeatherWidget />}
 
         <section className="composer" aria-label="Create a post">
           <img src={profilePhoto} alt="" />
-          <button type="button">What’s going on, Alex?</button>
+          <button type="button" onClick={() => setComposerOpen(true)}>What’s going on, {account.username}?</button>
         </section>
 
         <div className="feed-list" aria-live="polite">
@@ -110,7 +156,7 @@ function Feed({ account, isDemoSession, onLogout }) {
               <span className="empty-spark">✦</span>
               <h2>Your feed is ready for a first post.</h2>
               <p>Share a photo, a thought, or whatever is on repeat today.</p>
-              <button type="button">Create a post</button>
+              <button type="button" onClick={() => setComposerOpen(true)}>Create a post</button>
             </div>
           )}
           {posts.map((post) => (
@@ -139,6 +185,64 @@ function Feed({ account, isDemoSession, onLogout }) {
         </section>
       </aside>
     </div>
+    {composerOpen && (
+      <div className="composer-backdrop" role="presentation" onMouseDown={(event) => {
+        if (event.target === event.currentTarget) closeComposer();
+      }}>
+        <section className="post-composer-modal" role="dialog" aria-modal="true" aria-labelledby="post-composer-title">
+          <header className="post-composer-header">
+            <h2 id="post-composer-title">Create post</h2>
+            <button type="button" aria-label="Close create post" onClick={closeComposer}>×</button>
+          </header>
+
+          <form className="post-composer-form" onSubmit={handleCreatePost}>
+            <div className="composer-identity">
+              <img src={profilePhoto} alt="" />
+              <div>
+                <strong>{account.username}</strong>
+                <span>Friends</span>
+              </div>
+            </div>
+
+            <textarea
+              autoFocus
+              value={draftCaption}
+              onChange={(event) => setDraftCaption(event.target.value)}
+              placeholder={`What’s on your mind, ${account.username}?`}
+              aria-label="Post text"
+            />
+
+            {draftImage && (
+              <div className="composer-preview">
+                <img src={draftImage.previewUrl} alt="Selected upload preview" />
+                <button type="button" aria-label="Remove selected photo" onClick={() => {
+                  URL.revokeObjectURL(draftImage.previewUrl);
+                  setDraftImage(null);
+                }}>×</button>
+              </div>
+            )}
+
+            <div className="composer-attachments">
+              <span>Add to your post</span>
+              <label className="photo-upload-button">
+                <Icon name="photo" />
+                <span>Photo</span>
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+              </label>
+            </div>
+
+            {isDemoSession && (
+              <p className="composer-note">Demo post previews reset when this page refreshes.</p>
+            )}
+
+            <div className="composer-footer">
+              <button className="composer-cancel" type="button" onClick={closeComposer}>Cancel</button>
+              <button className="composer-submit" type="submit" disabled={!draftCaption.trim() && !draftImage}>Post</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    )}
     <DeploymentDemo deployment={deployment} onDeploymentChange={setDeployment} />
     </>
   );

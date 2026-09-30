@@ -84,6 +84,36 @@
 .composer { display: flex; align-items: center; gap: 12px; padding: 16px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 12px 12px 12px 4px; background: rgba(255, 254, 250, .85); }
 .composer img { width: 42px; height: 42px; border-radius: 9px 9px 9px 3px; object-fit: cover; object-position: 50% 22%; }
 .composer button { flex: 1; min-height: 42px; padding: 0 16px; border: 1px solid #e3ded6; border-radius: 9px; color: #89828d; background: #f8f5ef; cursor: text; text-align: left; font-size: 13px; }
+.composer-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(28, 24, 33, .58); backdrop-filter: blur(2px); }
+.post-composer-modal { width: min(530px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; border: 1px solid #d8d2df; border-radius: 14px 14px 14px 5px; background: var(--paper); box-shadow: 0 24px 70px rgba(23, 17, 33, .3); }
+.post-composer-header { position: relative; display: flex; align-items: center; justify-content: center; min-height: 58px; padding: 0 56px; border-bottom: 1px solid var(--line); }
+.post-composer-header h2 { margin: 0; font: 700 21px Georgia, serif; }
+.post-composer-header button { position: absolute; right: 15px; display: grid; width: 32px; height: 32px; place-items: center; border: 0; border-radius: 50%; color: #625c68; background: #eeeae5; font-size: 23px; line-height: 1; cursor: pointer; }
+.post-composer-form { padding: 17px; }
+.composer-identity { display: flex; align-items: center; gap: 11px; }
+.composer-identity img { width: 42px; height: 42px; border-radius: 9px 9px 9px 3px; object-fit: cover; object-position: 50% 22%; }
+.composer-identity div { display: grid; gap: 3px; }
+.composer-identity strong { font-size: 13px; }
+.composer-identity span { width: max-content; padding: 3px 7px; border-radius: 4px; color: #5e5963; background: #eeeae5; font-size: 9px; font-weight: 750; }
+.post-composer-form textarea { width: 100%; min-height: 150px; margin: 14px 0 10px; padding: 7px 3px; resize: vertical; border: 0; color: var(--ink); background: transparent; font: 17px/1.5 Arial, sans-serif; }
+.post-composer-form textarea::placeholder { color: #98919d; }
+.post-composer-form textarea:focus { outline: 0; }
+.composer-preview { position: relative; overflow: hidden; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 9px; background: #efebe5; }
+.composer-preview img { display: block; width: 100%; max-height: 330px; object-fit: contain; }
+.composer-preview button { position: absolute; top: 9px; right: 9px; display: grid; width: 31px; height: 31px; place-items: center; border: 1px solid #d2ccd5; border-radius: 50%; color: #4d4654; background: rgba(255, 255, 255, .92); font-size: 20px; cursor: pointer; }
+.composer-attachments { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 11px 8px 14px; border: 1px solid var(--line); border-radius: 8px; }
+.composer-attachments > span { font-size: 11px; font-weight: 800; }
+.photo-upload-button { display: flex; align-items: center; gap: 6px; padding: 8px 11px; border-radius: 7px; color: #247a3c; background: #eaf6ed; font-size: 11px; font-weight: 800; cursor: pointer; }
+.photo-upload-button:hover { background: #dff0e3; }
+.photo-upload-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.photo-upload-button input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.composer-note { margin: 10px 2px 0; color: var(--muted); font-size: 10px; }
+.composer-footer { display: grid; grid-template-columns: auto 1fr; gap: 9px; margin-top: 14px; }
+.composer-footer button { min-height: 40px; border-radius: 7px; font-size: 12px; font-weight: 800; cursor: pointer; }
+.composer-cancel { padding: 0 16px; border: 1px solid var(--line); color: #625c68; background: white; }
+.composer-submit { border: 0; color: white; background: var(--purple); }
+.composer-submit:hover { background: var(--purple-dark); }
+.composer-submit:disabled { color: #9c96a1; background: #e5e1e7; cursor: not-allowed; }
 .feed-list { display: grid; gap: 18px; }
 .feed-notice, .empty-feed, .feed-post { border: 1px solid var(--line); background: var(--paper); box-shadow: 0 8px 30px rgba(51, 40, 31, .045); }
 .feed-notice { padding: 40px; border-radius: 12px; color: var(--muted); text-align: center; }
