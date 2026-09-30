@@ -1,5 +1,9 @@
 from flask import current_app, request
-from backend.services.auth_service import register_user, authenticate_user
+from backend.services.auth_service import (
+    DEMO_EMAIL,
+    authenticate_user,
+    register_user,
+)
 
 
 def signup():
@@ -24,10 +28,17 @@ def login():
     identifier = data.get("email")
     password = data.get("password")
 
-    if authenticate_user(identifier, password):
+    user = authenticate_user(identifier, password)
+
+    if user is not None:
         current_app.logger.info("login_succeeded")
         return {
-            "message": "Login successful"
+            "message": "Login successful",
+            "account": {
+                "id": user.id,
+                "username": user.username,
+                "is_demo": user.email == DEMO_EMAIL,
+            },
         }, 200
 
     current_app.logger.warning("login_failed reason=invalid_credentials")

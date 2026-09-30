@@ -45,7 +45,7 @@ function Login({ onLogin, onSignup }) {
       const data = await response.json();
 
       if (response.ok) {
-        onLogin();
+        onLogin(data.account);
       } else {
         // NEW: show Flask's error message
         setError(data.message || "Login failed");

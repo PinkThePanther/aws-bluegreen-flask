@@ -5,19 +5,25 @@ import Feed from "./components/feed";
 import "./App.css";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [account, setAccount] = useState(null);
   const [page, setPage] = useState("login");
 
-  function handleLogin() {
-    setLoggedIn(true);
+  function handleLogin(authenticatedAccount) {
+    setAccount(authenticatedAccount);
   }
 
   function handleLogout(){
-    setLoggedIn(false);
+    setAccount(null);
   } 
 
-   if (loggedIn) {
-    return <Feed onLogout={handleLogout} />;
+   if (account) {
+    return (
+      <Feed
+        account={account}
+        isDemoSession={account.is_demo}
+        onLogout={handleLogout}
+      />
+    );
   }
 
 

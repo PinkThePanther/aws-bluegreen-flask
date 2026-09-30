@@ -19,7 +19,7 @@ const Icon = ({ name }) => {
   return <svg aria-hidden="true" viewBox="0 0 24 24">{paths[name]}</svg>;
 };
 
-function Feed({ onLogout }) {
+function Feed({ account, isDemoSession, onLogout }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialDeployment =
@@ -39,7 +39,10 @@ function Feed({ onLogout }) {
 
   return (
     <>
-    <div className="social-shell">
+    <div
+      className="social-shell"
+      data-demo-session={isDemoSession || undefined}
+    >
       <aside className="left-rail">
         <a className="brand" href="#feed" aria-label="BlueGreen home">
           <span className="brand-mark">BG</span>
@@ -48,7 +51,7 @@ function Feed({ onLogout }) {
 
         <section className="profile-card" aria-label="Your profile">
           <div className="profile-greeting">
-            <strong>Hello, Alex!</strong>
+            <strong>Hello, {account.username}!</strong>
             <span>My URL: <button type="button">bluegreen.com/alex</button></span>
           </div>
           <div className="profile-photo-wrap">

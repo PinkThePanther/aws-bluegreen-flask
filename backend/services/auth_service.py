@@ -93,6 +93,9 @@ def authenticate_user(identifier, password):
     user = db.session.scalar(stmt)
 
     if user is None:
-        return False
+        return None
 
-    return check_password_hash(user.password_hash, password)
+    if not check_password_hash(user.password_hash, password):
+        return None
+
+    return user
