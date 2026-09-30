@@ -18,6 +18,9 @@ def create_post(user_id, image_url, caption):
 
 
 def get_posts():
-    posts = Post.query.all()
-
-    return posts
+    return (
+        Post.query
+        .order_by(Post.created_at.desc(), Post.id.desc())
+        .limit(20)
+        .all()
+    )
