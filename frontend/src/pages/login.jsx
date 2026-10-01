@@ -123,7 +123,7 @@ function Login({ onLogin, onSignup }) {
             </button>
           </div>
 
-          <p className="signup-intro">
+          <p className="login-hosting-note">
             Originally exercised on AWS ECS with CloudWatch logging. This live
             portfolio version runs on Railway using the same Dockerized app and
             Railway runtime logs.

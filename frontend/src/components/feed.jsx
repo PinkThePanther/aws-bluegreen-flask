@@ -253,6 +253,10 @@ function Feed({ account, isDemoSession, onLogout }) {
       </aside>
 
       <main className="feed-main" id="feed">
+        {isGreenDeployment && <WeatherWidget />}
+
+        <DeploymentDemo deployment={deployment} onDeploymentChange={setDeployment} />
+
         <header className="feed-header">
           <div>
             <p className="eyebrow">Thursday, September 11</p>
@@ -260,8 +264,6 @@ function Feed({ account, isDemoSession, onLogout }) {
           </div>
           <button className="header-action" type="button" aria-label="Create a post" onClick={() => setComposerOpen(true)}><Icon name="plus" />New post</button>
         </header>
-
-        {isGreenDeployment && <WeatherWidget />}
 
         <section className="composer" aria-label="Create a post">
           <img src={profilePhoto} alt="" />
@@ -377,7 +379,6 @@ function Feed({ account, isDemoSession, onLogout }) {
         </section>
       </div>
     )}
-    <DeploymentDemo deployment={deployment} onDeploymentChange={setDeployment} />
     </>
   );
 }
