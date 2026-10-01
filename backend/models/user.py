@@ -31,4 +31,14 @@ class Post(db.Model):
         created_at = db.Column(db.DateTime)
 
 
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint("user_id", "post_id", name="uq_like_user_post"),
+    )
+
 

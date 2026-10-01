@@ -27,6 +27,8 @@ function Feed({ account, isDemoSession, onLogout }) {
   const [draftImage, setDraftImage] = useState(null);
   const [composerError, setComposerError] = useState("");
   const [submittingPost, setSubmittingPost] = useState(false);
+  const [pendingLikes, setPendingLikes] = useState([]);
+  const [likeError, setLikeError] = useState("");
   const initialDeployment =
     (import.meta.env.VITE_DEPLOYMENT_COLOR || "blue").toLowerCase() === "green"
       ? "green"
@@ -35,12 +37,12 @@ function Feed({ account, isDemoSession, onLogout }) {
   const isGreenDeployment = deployment === "green";
 
   useEffect(() => {
-    fetch(apiUrl("/posts"))
+    fetch(apiUrl(`/posts?user_id=${account.id}`))
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch(() => setPosts([]))
       .finally(() => setLoading(false));
-  }, []);
+  }, [account.id]);
 
   const closeComposer = () => {
     if (draftImage?.previewUrl) {
@@ -121,6 +123,48 @@ function Feed({ account, isDemoSession, onLogout }) {
     }
   };
 
+  const handleLike = async (postId) => {
+    if (pendingLikes.includes(postId)) return;
+
+    setLikeError("");
+
+    if (isDemoSession || String(postId).startsWith("preview-")) {
+      setPosts((currentPosts) => currentPosts.map((post) => {
+        if (post.id !== postId) return post;
+        const liked = !post.liked;
+        return {
+          ...post,
+          liked,
+          likes: Math.max(0, (post.likes || 0) + (liked ? 1 : -1)),
+        };
+      }));
+      return;
+    }
+
+    setPendingLikes((current) => [...current, postId]);
+
+    try {
+      const response = await fetch(apiUrl(`/posts/${postId}/like`), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: account.id }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || "Unable to update like");
+
+      setPosts((currentPosts) => currentPosts.map((post) => (
+        post.id === postId
+          ? { ...post, liked: data.liked, likes: data.likes }
+          : post
+      )));
+    } catch (error) {
+      setLikeError(error.message || "Unable to update like");
+    } finally {
+      setPendingLikes((current) => current.filter((id) => id !== postId));
+    }
+  };
+
   return (
     <>
     <div
@@ -188,6 +232,7 @@ function Feed({ account, isDemoSession, onLogout }) {
         </section>
 
         <div className="feed-list" aria-live="polite">
+          {likeError && <div className="feed-error" role="alert">{likeError}</div>}
           {loading && <div className="feed-notice">Loading your feed…</div>}
           {!loading && posts.length === 0 && (
             <div className="empty-feed">
@@ -198,7 +243,15 @@ function Feed({ account, isDemoSession, onLogout }) {
             </div>
           )}
           {posts.map((post) => (
-            <Post key={post.id} image={post.image_url} caption={post.caption} likes={post.likes} />
+            <Post
+              key={post.id}
+              image={post.image_url}
+              caption={post.caption}
+              likes={post.likes}
+              liked={post.liked}
+              likePending={pendingLikes.includes(post.id)}
+              onLike={() => handleLike(post.id)}
+            />
           ))}
         </div>
       </main>

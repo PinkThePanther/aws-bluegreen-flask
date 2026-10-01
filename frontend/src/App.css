@@ -118,6 +118,7 @@
 .feed-list { display: grid; gap: 18px; }
 .feed-notice, .empty-feed, .feed-post { border: 1px solid var(--line); background: var(--paper); box-shadow: 0 8px 30px rgba(51, 40, 31, .045); }
 .feed-notice { padding: 40px; border-radius: 12px; color: var(--muted); text-align: center; }
+.feed-error { padding: 11px 14px; border: 1px solid #e8b4ae; border-radius: 8px; color: #9f241b; background: #fff2f0; font-size: 11px; font-weight: 700; }
 .empty-feed { padding: 60px 32px; border-radius: 12px 12px 12px 4px; text-align: center; }
 .empty-spark { display: block; color: #e78d5d; font-size: 26px; }
 .empty-feed h2 { margin: 14px 0 7px; font: 700 22px Georgia, serif; }
@@ -136,6 +137,8 @@
 .post-actions { display: grid; grid-template-columns: repeat(3, 1fr); padding: 6px 10px; }
 .post-actions button { padding: 9px; border: 0; border-radius: 6px; background: none; color: #5e5963; font-size: 11px; font-weight: 700; cursor: pointer; }
 .post-actions button:hover { background: #f4f0fa; color: var(--purple); }
+.post-actions button.liked { color: var(--purple); background: #f4f0fa; }
+.post-actions button:disabled { cursor: wait; opacity: .65; }
 
 .right-rail { padding-top: 108px; }
 .side-module { margin-bottom: 18px; padding: 19px; border: 1px solid var(--line); border-radius: 10px 10px 10px 3px; background: rgba(255, 254, 250, .7); }

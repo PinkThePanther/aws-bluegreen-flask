@@ -1,4 +1,4 @@
-function Post({ image, likes = 0, caption }) {
+function Post({ image, likes = 0, caption, liked = false, likePending = false, onLike }) {
   return (
     <article className="feed-post">
       <header className="post-header">
@@ -13,7 +13,13 @@ function Post({ image, likes = 0, caption }) {
         <span>0 comments</span>
       </footer>
       <div className="post-actions">
-        <button type="button">♡ Like</button>
+        <button
+          className={liked ? "liked" : ""}
+          type="button"
+          onClick={onLike}
+          disabled={likePending}
+          aria-pressed={liked}
+        >{liked ? "♥ Liked" : "♡ Like"}</button>
         <button type="button">○ Comment</button>
         <button type="button">↗ Share</button>
       </div>
