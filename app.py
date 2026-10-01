@@ -39,6 +39,11 @@ app.config["UPLOAD_FOLDER"] = os.getenv(
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 db.init_app(app)
 
+
+@app.errorhandler(413)
+def upload_too_large(_error):
+    return {"message": "Choose an image smaller than 8 MB"}, 413
+
 #db = SQLAlchemy(app)
 
 CORS(app)

@@ -6,6 +6,7 @@ from flask import current_app
 from pathlib import Path
 from uuid import uuid4
 from werkzeug.utils import secure_filename
+from sqlalchemy.exc import SQLAlchemyError
 
 
 ALLOWED_IMAGE_EXTENSIONS = {"gif", "jpeg", "jpg", "png", "webp"}
@@ -47,6 +48,9 @@ def create_post(user_id, image_url, caption, image=None):
         uploaded_image_url = save_uploaded_image(image)
     except ValueError as error:
         return {"message": str(error)}, 400
+    except OSError:
+        current_app.logger.exception("post_image_upload_failed")
+        return {"message": "Unable to upload that image. Please try again"}, 500
 
     caption = (caption or "").strip()
     image_url = uploaded_image_url or image_url or ""
@@ -62,7 +66,12 @@ def create_post(user_id, image_url, caption, image=None):
     )
 
     db.session.add(post)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("post_database_write_failed")
+        return {"message": "Unable to save that post. Please try again"}, 500
 
     return {
         "message": "Post created successfully",
