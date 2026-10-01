@@ -8,6 +8,7 @@ from backend.extensions import db
 from backend.models.user import User
 from backend.services.auth_service import ensure_demo_posts, ensure_demo_user
 from backend.controllers.content_controller import (
+    comments_controller,
     create_post_controller,
     get_posts_controller,
     like_post,
@@ -124,6 +125,11 @@ app.add_url_rule("/login", view_func=login, methods=["POST"])
 app.add_url_rule("/posts",view_func=create_post_controller,methods=["POST"])
 app.add_url_rule("/posts", view_func=get_posts_controller, methods=["GET"])
 app.add_url_rule("/posts/<int:post_id>/like", view_func=like_post, methods=["POST"])
+app.add_url_rule(
+    "/posts/<int:post_id>/comments",
+    view_func=comments_controller,
+    methods=["GET", "POST"],
+)
 
 
 @app.get("/uploads/<path:filename>")

@@ -22,13 +22,12 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime)
 
 
-
-    class Comment(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
-        user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-        content = db.Column(db.Text, nullable=False)
-        created_at = db.Column(db.DateTime)
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
 
 
 class Like(db.Model):
@@ -40,5 +39,4 @@ class Like(db.Model):
     __table_args__ = (
         db.UniqueConstraint("user_id", "post_id", name="uq_like_user_post"),
     )
-
 

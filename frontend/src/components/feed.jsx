@@ -1,7 +1,7 @@
 import Post from "./Post";
 import WeatherWidget from "./WeatherWidget";
 import DeploymentDemo from "./DeploymentDemo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import profilePhoto from "../assets/sandisk-WenbkhpNLCc-unsplash.jpg";
 import { apiUrl } from "../api";
 
@@ -29,6 +29,7 @@ function Feed({ account, isDemoSession, onLogout }) {
   const [submittingPost, setSubmittingPost] = useState(false);
   const [pendingLikes, setPendingLikes] = useState([]);
   const [likeError, setLikeError] = useState("");
+  const nextPreviewCommentId = useRef(0);
   const initialDeployment =
     (import.meta.env.VITE_DEPLOYMENT_COLOR || "blue").toLowerCase() === "green"
       ? "green"
@@ -83,6 +84,7 @@ function Feed({ account, isDemoSession, onLogout }) {
           caption: draftCaption.trim(),
           image_url: draftImage?.previewUrl || null,
           likes: 0,
+          comments: [],
         },
         ...currentPosts,
       ]);
@@ -111,7 +113,7 @@ function Feed({ account, isDemoSession, onLogout }) {
         throw new Error(data.message || "Unable to create post");
       }
 
-      setPosts((currentPosts) => [{ ...data.post, likes: 0 }, ...currentPosts]);
+      setPosts((currentPosts) => [{ ...data.post, likes: 0, comments: [] }, ...currentPosts]);
       if (draftImage?.previewUrl) URL.revokeObjectURL(draftImage.previewUrl);
       setDraftCaption("");
       setDraftImage(null);
@@ -163,6 +165,41 @@ function Feed({ account, isDemoSession, onLogout }) {
     } finally {
       setPendingLikes((current) => current.filter((id) => id !== postId));
     }
+  };
+
+  const handleComment = async (postId, content) => {
+    if (isDemoSession || String(postId).startsWith("preview-")) {
+      nextPreviewCommentId.current += 1;
+      const comment = {
+        id: `preview-comment-${nextPreviewCommentId.current}`,
+        post_id: postId,
+        user_id: account.id,
+        username: account.username,
+        content,
+        created_at: new Date().toISOString(),
+      };
+      setPosts((currentPosts) => currentPosts.map((post) => (
+        post.id === postId
+          ? { ...post, comments: [...(post.comments || []), comment] }
+          : post
+      )));
+      return;
+    }
+
+    const response = await fetch(apiUrl(`/posts/${postId}/comments`), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: account.id, content }),
+    });
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.message || "Unable to add comment");
+
+    setPosts((currentPosts) => currentPosts.map((post) => (
+      post.id === postId
+        ? { ...post, comments: [...(post.comments || []), data.comment] }
+        : post
+    )));
   };
 
   return (
@@ -251,6 +288,8 @@ function Feed({ account, isDemoSession, onLogout }) {
               liked={post.liked}
               likePending={pendingLikes.includes(post.id)}
               onLike={() => handleLike(post.id)}
+              comments={post.comments || []}
+              onComment={(content) => handleComment(post.id, content)}
             />
           ))}
         </div>
