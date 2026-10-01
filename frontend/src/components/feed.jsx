@@ -25,6 +25,8 @@ function Feed({ account, isDemoSession, onLogout }) {
   const [composerOpen, setComposerOpen] = useState(false);
   const [draftCaption, setDraftCaption] = useState("");
   const [draftImage, setDraftImage] = useState(null);
+  const [composerError, setComposerError] = useState("");
+  const [submittingPost, setSubmittingPost] = useState(false);
   const initialDeployment =
     (import.meta.env.VITE_DEPLOYMENT_COLOR || "blue").toLowerCase() === "green"
       ? "green"
@@ -46,6 +48,7 @@ function Feed({ account, isDemoSession, onLogout }) {
     }
     setDraftCaption("");
     setDraftImage(null);
+    setComposerError("");
     setComposerOpen(false);
   };
 
@@ -53,6 +56,8 @@ function Feed({ account, isDemoSession, onLogout }) {
     const file = event.target.files?.[0];
 
     if (!file) return;
+
+    setComposerError("");
 
     if (draftImage?.previewUrl) {
       URL.revokeObjectURL(draftImage.previewUrl);
@@ -64,23 +69,56 @@ function Feed({ account, isDemoSession, onLogout }) {
     });
   };
 
-  const handleCreatePost = (event) => {
+  const handleCreatePost = async (event) => {
     event.preventDefault();
 
     if (!draftCaption.trim() && !draftImage) return;
 
-    setPosts((currentPosts) => [
-      {
-        id: `preview-${Date.now()}`,
-        caption: draftCaption.trim(),
-        image_url: draftImage?.previewUrl || null,
-        likes: 0,
-      },
-      ...currentPosts,
-    ]);
-    setDraftCaption("");
-    setDraftImage(null);
-    setComposerOpen(false);
+    if (isDemoSession) {
+      setPosts((currentPosts) => [
+        {
+          id: `preview-${Date.now()}`,
+          caption: draftCaption.trim(),
+          image_url: draftImage?.previewUrl || null,
+          likes: 0,
+        },
+        ...currentPosts,
+      ]);
+      setDraftCaption("");
+      setDraftImage(null);
+      setComposerOpen(false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("user_id", account.id);
+    formData.append("caption", draftCaption.trim());
+    if (draftImage?.file) formData.append("image", draftImage.file);
+
+    setSubmittingPost(true);
+    setComposerError("");
+
+    try {
+      const response = await fetch(apiUrl("/posts"), {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to create post");
+      }
+
+      setPosts((currentPosts) => [{ ...data.post, likes: 0 }, ...currentPosts]);
+      if (draftImage?.previewUrl) URL.revokeObjectURL(draftImage.previewUrl);
+      setDraftCaption("");
+      setDraftImage(null);
+      setComposerOpen(false);
+    } catch (error) {
+      setComposerError(error.message || "Unable to create post");
+    } finally {
+      setSubmittingPost(false);
+    }
   };
 
   return (
@@ -207,7 +245,10 @@ function Feed({ account, isDemoSession, onLogout }) {
             <textarea
               autoFocus
               value={draftCaption}
-              onChange={(event) => setDraftCaption(event.target.value)}
+              onChange={(event) => {
+                setDraftCaption(event.target.value);
+                setComposerError("");
+              }}
               placeholder={`What’s on your mind, ${account.username}?`}
               aria-label="Post text"
             />
@@ -234,10 +275,11 @@ function Feed({ account, isDemoSession, onLogout }) {
             {isDemoSession && (
               <p className="composer-note">Demo post previews reset when this page refreshes.</p>
             )}
+            {composerError && <p className="composer-error" role="alert">{composerError}</p>}
 
             <div className="composer-footer">
-              <button className="composer-cancel" type="button" onClick={closeComposer}>Cancel</button>
-              <button className="composer-submit" type="submit" disabled={!draftCaption.trim() && !draftImage}>Post</button>
+              <button className="composer-cancel" type="button" onClick={closeComposer} disabled={submittingPost}>Cancel</button>
+              <button className="composer-submit" type="submit" disabled={submittingPost || (!draftCaption.trim() && !draftImage)}>{submittingPost ? "Posting…" : "Post"}</button>
             </div>
           </form>
         </section>

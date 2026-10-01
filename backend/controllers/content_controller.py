@@ -18,13 +18,19 @@ def get_posts_controller():
 
 
 def create_post_controller():
-    data = request.get_json()
+    if request.files or request.form:
+        data = request.form
+        image = request.files.get("image")
+        image_url = None
+    else:
+        data = request.get_json(silent=True) or {}
+        image = None
+        image_url = data.get("image_url")
 
     user_id = data.get("user_id")
-    image_url = data.get("image_url")
     caption = data.get("caption")
 
-    return create_post(user_id, image_url, caption)
+    return create_post(user_id, image_url, caption, image=image)
 
 
 def like_post():

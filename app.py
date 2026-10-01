@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, current_app, send_from_directory
 from flask_cors import CORS
 #from flask_sqlalchemy import SQLAlchemy 
 import os
@@ -13,6 +13,11 @@ from backend.observability import configure_observability
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
+DEFAULT_UPLOAD_FOLDER = (
+    Path("/data/uploads")
+    if Path("/data").is_dir()
+    else PROJECT_ROOT / "instance" / "uploads"
+)
 
 app = Flask(__name__, static_folder=None)
 configure_observability(app)
@@ -22,6 +27,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "DATABASE_URL",
     "sqlite:///bluegreen.db"
 )
+app.config["UPLOAD_FOLDER"] = os.getenv(
+    "UPLOAD_FOLDER",
+    str(DEFAULT_UPLOAD_FOLDER),
+)
+app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 db.init_app(app)
 
 #db = SQLAlchemy(app)
@@ -109,6 +119,11 @@ app.add_url_rule("/signup", view_func=signup, methods=["POST"])
 app.add_url_rule("/login", view_func=login, methods=["POST"])
 app.add_url_rule("/posts",view_func=create_post_controller,methods=["POST"])
 app.add_url_rule("/posts", view_func=get_posts_controller, methods=["GET"])
+
+
+@app.get("/uploads/<path:filename>")
+def uploaded_file(filename):
+    return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)
 
 
 @app.get("/<path:path>")
